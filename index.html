@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trời u ám, bụng thì đói</title>
+<meta name="description" content="Trời có thể u ám, nhưng một bát phở thì sáng cả ngày. Chọn món, quét mã VietQR, mời mình một bữa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#13161c; --fog:#1d222b; --line:#323a47; --ink:#e7eaf0; --muted:#98a3b5;
+  --lamp:#f3b94d; --lamp-ink:#1a1305;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.7 "Be Vietnam Pro",system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:0 20px 72px}
+h1,h2{font-family:"Playfair Display",Georgia,serif;font-weight:700;letter-spacing:-.01em}
+h1{font-size:clamp(2.3rem,8.5vw,4rem);line-height:1.1;margin:0 0 18px}
+h1 em{color:var(--lamp)}
+h2{font-size:1.7rem;margin:60px 0 8px}
+p{margin:0 0 14px}
+.muted{color:var(--muted)}
+
+/* hero scene */
+.scene{position:relative;height:260px;margin:0 -20px;overflow:hidden;background:linear-gradient(#0d0f14,var(--bg))}
+.scene::before{content:"";position:absolute;left:0;right:0;bottom:0;height:32px;background:#0b0d11}
+.scene svg{position:absolute;bottom:0;left:50%;height:100%;width:auto;aspect-ratio:720/260;transform:translateX(-50%)}
+.rain line{stroke:#6f7f98;stroke-width:1.2;opacity:.5;animation:fall 1.1s linear infinite}
+@keyframes fall{from{transform:translateY(-40px)}to{transform:translateY(300px)}}
+.steam{animation:steam 3.2s ease-in-out infinite;transform-origin:center bottom}
+@keyframes steam{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:.7;transform:translateY(-6px)}}
+#rain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.scene,main{position:relative;z-index:1}
+.fog{position:absolute;left:-50%;width:200%;height:140px;pointer-events:none;filter:blur(18px);
+  background:radial-gradient(ellipse 18% 50% at 15% 50%,rgba(170,182,200,.28),transparent 70%),
+             radial-gradient(ellipse 22% 55% at 45% 55%,rgba(170,182,200,.22),transparent 70%),
+             radial-gradient(ellipse 16% 45% at 75% 45%,rgba(170,182,200,.26),transparent 70%)}
+.fog.f1{bottom:20px;animation:drift 38s linear infinite}
+.fog.f2{bottom:-30px;height:120px;opacity:.8;animation:drift 56s linear infinite reverse}
+.fog.f3{top:20px;height:100px;opacity:.5;animation:drift 70s linear infinite}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(25%)}}
+.mist{position:fixed;left:0;right:0;bottom:0;height:30vh;pointer-events:none;z-index:2;
+  background:linear-gradient(transparent,rgba(120,134,155,.12))}
+.live{font-size:.95rem;color:var(--lamp);border-left:3px solid var(--lamp);padding-left:12px}
+.live #hunger{color:var(--muted)}
+.scene.boost .steam{animation-duration:1s}
+.hero{padding-top:8px}
+.hero p{max-width:52ch;font-size:1.08rem;color:#cfd5df}
+
+.btn{display:inline-block;background:var(--lamp);color:var(--lamp-ink);border:0;border-radius:10px;padding:12px 24px;font:600 1rem "Be Vietnam Pro",sans-serif;text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--lamp);outline-offset:3px}
+
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}
+.dish{background:var(--fog);border:1.5px solid var(--line);border-radius:12px;padding:16px;text-align:left;color:var(--ink);font:inherit;cursor:pointer}
+.dish b{display:block}
+.dish span{display:block;color:var(--muted);font-size:.9rem}
+.dish .price{color:var(--lamp);font-weight:600;font-size:1.2rem;margin-top:6px}
+.dish[aria-pressed="true"]{border-color:var(--lamp);box-shadow:0 0 0 1.5px var(--lamp) inset,0 0 24px rgba(243,185,77,.18)}
+.custom{display:flex;gap:10px;align-items:center;margin-bottom:28px}
+.custom input{flex:1;font:inherit;padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--fog);color:var(--ink)}
+
+.pay{background:var(--fog);border:1.5px solid var(--line);border-radius:16px;padding:24px;display:grid;gap:22px;grid-template-columns:1fr}
+@media(min-width:620px){.pay{grid-template-columns:240px 1fr;align-items:start}}
+.qr{width:100%;max-width:240px;aspect-ratio:1;background:#fff;border-radius:12px;padding:8px;margin:0 auto;box-shadow:0 0 36px rgba(243,185,77,.25)}
+.qr img{width:100%;height:100%;display:block}
+dl{margin:0}
+dt{font-size:.85rem;color:var(--muted);margin-top:10px}
+dd{margin:0;display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:600;word-break:break-all}
+.copy{background:none;border:1.5px solid var(--line);border-radius:8px;color:var(--ink);padding:2px 10px;font:inherit;font-size:.85rem;flex:none;cursor:pointer}
+.copy.done{border-color:var(--lamp);color:var(--lamp)}
+
+.bill{border:1.5px dashed var(--line);border-radius:12px;padding:18px 22px;margin-top:20px}
+.bill div{display:flex;justify-content:space-between;padding:3px 0}
+.bill .total{border-top:1.5px solid var(--muted);margin-top:8px;padding-top:8px;font-weight:600;color:var(--lamp)}
+
+details{background:var(--fog);border-radius:12px;padding:14px 18px;margin-bottom:10px;border:1.5px solid var(--line)}
+summary{font-weight:600;cursor:pointer}
+details p{margin:10px 0 0;color:var(--muted)}
+footer{margin-top:56px;font-size:.9rem;color:var(--muted)}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rain line,.steam,.fog{animation:none}#rain{display:none}}
+</style>
+</head>
+<body>
+<canvas id="rain" aria-hidden="true"></canvas>
+<div class="mist" aria-hidden="true"></div>
+
+<div class="scene" aria-hidden="true">
+  <div class="fog f3"></div>
+  <svg viewBox="0 0 720 260" preserveAspectRatio="xMidYMax meet">
+    <defs>
+      <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#f3b94d" stop-opacity=".55"/>
+        <stop offset="1" stop-color="#f3b94d" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <g class="rain">
+      <line x1="40" y1="-40" x2="34" y2="-10"/><line x1="110" y1="-40" x2="104" y2="-10" style="animation-delay:-.4s"/>
+      <line x1="190" y1="-40" x2="184" y2="-10" style="animation-delay:-.8s"/><line x1="260" y1="-40" x2="254" y2="-10" style="animation-delay:-.2s"/>
+      <line x1="470" y1="-40" x2="464" y2="-10" style="animation-delay:-.6s"/><line x1="540" y1="-40" x2="534" y2="-10" style="animation-delay:-.9s"/>
+      <line x1="610" y1="-40" x2="604" y2="-10" style="animation-delay:-.3s"/><line x1="680" y1="-40" x2="674" y2="-10" style="animation-delay:-.7s"/>
+      <line x1="150" y1="-40" x2="144" y2="-10" style="animation-delay:-.5s"/><line x1="570" y1="-40" x2="564" y2="-10" style="animation-delay:-.1s"/>
+    </g>
+    <circle cx="360" cy="150" r="130" fill="url(#glow)"/>
+    <rect x="0" y="228" width="720" height="32" fill="#0b0d11"/>
+    <ellipse cx="360" cy="228" rx="90" ry="6" fill="#f3b94d" opacity=".18"/>
+    <path d="M300 170 Q304 224 360 224 Q416 224 420 170 Z" fill="#2c3646" stroke="#7f8fa6" stroke-width="2"/>
+    <ellipse cx="360" cy="170" rx="60" ry="14" fill="#f3b94d"/>
+    <ellipse cx="342" cy="168" rx="16" ry="6" fill="#fff6dc"/><circle cx="342" cy="168" r="4" fill="#e9a21f"/>
+    <g class="steam" fill="none" stroke="#e7eaf0" stroke-width="3" stroke-linecap="round">
+      <path d="M336 150 q-8 -14 0 -26 q8 -12 0 -24"/><path d="M362 150 q-8 -14 0 -26 q8 -12 0 -24" style="animation-delay:.6s"/><path d="M388 150 q-8 -14 0 -26 q8 -12 0 -24"/>
+    </g>
+  </svg>
+  <div class="fog f1"></div>
+  <div class="fog f2"></div>
+</div>
+
+<main>
+<section class="hero">
+  <h1>Trời u ám,<br>nhưng <em>bát phở</em> thì sáng cả ngày.</h1>
+  <p>Chào bạn! Hôm nay mây xám, ví cũng xám, nhưng tinh thần của mình thì rực rỡ. Bạn chỉ cần chọn một món, quét mã, và mình sẽ ăn thật ngon, thật biết ơn, rồi kể cho cả xóm nghe bạn tốt thế nào.</p>
+  <p class="live"><span id="greet"></span><br><span id="hunger"></span></p>
+  <p><a class="btn" href="#moi">Mời mình một bữa nhé</a> <a class="btn ghost" href="#hoi">Hỏi trước cũng được</a></p>
+</section>
+
+<section id="moi">
+  <h2>Hôm nay bạn mời mình món gì?</h2>
+  <p class="muted">Giá tham khảo cho một bữa bình dân. Món nào cũng được cảm ơn bằng một nụ cười rất to.</p>
+  <div class="menu" id="menu"></div>
+  <div class="custom">
+    <label for="amt" class="muted">Số tiền khác</label>
+    <input id="amt" type="number" min="1000" step="1000" inputmode="numeric" placeholder="VD: 30000">
+  </div>
+
+  <div class="pay">
+    <div class="qr"><img id="qr" alt="Mã VietQR chuyển khoản" width="240" height="240"></div>
+    <dl>
+      <dt>Ngân hàng</dt><dd id="v-bank"></dd>
+      <dt>Chủ tài khoản</dt><dd id="v-name"></dd>
+      <dt>Số tài khoản</dt><dd><span id="v-acc"></span><button class="copy" data-copy="v-acc">Sao chép</button></dd>
+      <dt>Số tiền</dt><dd><span id="v-amt"></span><button class="copy" data-copy="v-amt-raw">Sao chép</button></dd>
+      <dt>Nội dung</dt><dd><span id="v-note"></span><button class="copy" data-copy="v-note">Sao chép</button></dd>
+    </dl>
+  </div>
+
+  <div class="bill" aria-live="polite">
+    <div><span id="b-name">Chưa chọn món</span><span id="b-price">0đ</span></div>
+    <div><span>Lời cảm ơn nồng nhiệt</span><span>miễn phí</span></div>
+    <div><span>Một ngày bớt u ám cho cả hai</span><span>miễn phí</span></div>
+    <div class="total"><span>Bạn trả</span><span id="b-total">0đ</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Lời hứa của người đi xin</h2>
+  <p>Mình nói thật, không kể khổ quá đà, không bán hàng. Mình đọc từng lời nhắn của bạn và cười một mình như người trúng số. Khi khá hơn, mình sẽ mời lại một người lạ một bữa cơm để vòng tử tế cứ thế quay.</p>
+</section>
+
+<section>
+  <h2>Chưa tiện chuyển khoản?</h2>
+  <p>Không sao, trời mưa ai cũng có lúc ngại mở ví. Gửi trang này cho một người bạn hay cười, nhắn mình vài lời động viên, hoặc giới thiệu cho mình một công việc tử tế đều quý như cơm nóng.</p>
+  <button class="btn ghost" id="share">Sao chép đường dẫn</button>
+</section>
+
+<section id="hoi">
+  <h2>Hỏi nhanh đáp gọn</h2>
+  <details><summary>Đây có phải lừa đảo không?</summary><p>Mình không hứa lãi, không bán gì, không ép ai. Tên chủ tài khoản hiện ngay phía trên để bạn đối chiếu trước khi chuyển.</p></details>
+  <details><summary>Nên chuyển bao nhiêu?</summary><p>Bao nhiêu cũng vui. Đừng chuyển số khiến bạn phải thắt lưng buộc bụng nhé.</p></details>
+  <details><summary>Chuyển xong có cần báo không?</summary><p>Không cần, nhưng để lại vài chữ trong nội dung chuyển khoản thì mình sẽ đọc và vui cả buổi.</p></details>
+  <details><summary>Mình chỉ ghé xem thôi thì sao?</summary><p>Hoàn toàn ổn. Bạn ghé qua và mỉm cười là mây đã tan bớt một chút rồi.</p></details>
+</section>
+
+<footer>Cảm ơn bạn đã ghé qua. Chúc bạn ăn ngon, ngủ ngon, và trời mai nắng đẹp.</footer>
+</main>
+
+<script>
+/* ====== THÔNG TIN CHUYỂN KHOẢN ====== */
+const CONFIG = {
+  bankCode: "TCB",
+  bankName: "Techcombank",
+  accountNo: "990919870723",
+  accountName: "DO MANH TUAN",
+  defaultNote: "Mời tô phở phổ độ chúng sinh"
+};
+/* ==================================== */
+
+const DISHES = [
+  {n:"Ly trà đá", d:"Giải khát, giải nhiệt, giải sầu.", p:5000},
+  {n:"Ổ bánh mì", d:"Thêm chút pate là hạnh phúc.", p:20000},
+  {n:"Tô phở", d:"Nóng hổi, ấm bụng, ấm lòng.", p:50000},
+  {n:"Bữa cơm đủ đầy", d:"Có canh, có thịt, có rau.", p:100000}
+];
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("vi-VN") + "đ";
+let state = {name:"Tô phở", price:50000};
+
+const menu = $("menu");
+DISHES.forEach(d=>{
+  const b = document.createElement("button");
+  b.className = "dish"; b.type = "button";
+  b.innerHTML = `<b>${d.n}</b><span>${d.d}</span><div class="price">${fmt(d.p)}</div>`;
+  b.onclick = () => { state = {name:d.n, price:d.p}; $("amt").value=""; render(); };
+  menu.appendChild(b);
+});
+
+$("amt").addEventListener("input", e=>{
+  const v = parseInt(e.target.value,10);
+  state = v>0 ? {name:"Tuỳ tâm", price:v} : {name:"Chưa chọn món", price:0};
+  render();
+});
+
+function render(){
+  document.querySelectorAll(".dish").forEach((b,i)=>b.setAttribute("aria-pressed", !$("amt").value && DISHES[i].p===state.price));
+  $("v-bank").textContent = CONFIG.bankName;
+  $("v-name").textContent = CONFIG.accountName;
+  $("v-acc").textContent = CONFIG.accountNo;
+  $("v-amt").textContent = state.price ? fmt(state.price) : "Tuỳ bạn";
+  $("v-note").textContent = CONFIG.defaultNote;
+  $("b-name").textContent = state.name;
+  $("b-price").textContent = fmt(state.price);
+  $("b-total").textContent = fmt(state.price);
+  const q = new URLSearchParams({addInfo:CONFIG.defaultNote, accountName:CONFIG.accountName});
+  if(state.price) q.set("amount", state.price);
+  $("qr").src = `https://img.vietqr.io/image/${CONFIG.bankCode}-${CONFIG.accountNo}-compact2.svg?${q}`;
+}
+
+document.addEventListener("click", async e=>{
+  const t = e.target.closest(".copy"); if(!t) return;
+  const id = t.dataset.copy;
+  const text = id==="v-amt-raw" ? String(state.price||"") : $(id).textContent;
+  try{ await navigator.clipboard.writeText(text); }catch(_){}
+  const old = t.textContent; t.textContent = "Đã chép"; t.classList.add("done");
+  setTimeout(()=>{t.textContent=old; t.classList.remove("done")},1500);
+});
+
+$("share").onclick = async e=>{
+  try{ await navigator.clipboard.writeText(location.href); e.target.textContent="Đã chép đường dẫn"; }
+  catch(_){ e.target.textContent="Hãy chép từ thanh địa chỉ"; }
+};
+
+render();
+
+/* ====== CHI TIẾT SỐNG ĐỘNG (không dùng số liệu giả) ====== */
+(function(){
+  const lines = [
+    [5,11,"Chào buổi sáng! Bụng mình đang biểu tình đòi bữa sáng."],
+    [11,14,"Trưa rồi! Giờ vàng của mọi bát cơm trên đời."],
+    [14,18,"Chiều rồi, mây xám mà bụng thì réo vui tai."],
+    [18,23,"Tối rồi! Mùi phở ngoài kia nghe thơm hơn bình thường."],
+    [23,29,"Khuya rồi mà bạn còn ghé, mình xin cảm ơn tấm lòng cú đêm."]
+  ];
+  function tick(){
+    const d = new Date(), hr = d.getHours();
+    const h = hr < 5 ? hr + 24 : hr;
+    const l = lines.find(x => h >= x[0] && h < x[1]);
+    $("greet").textContent = l ? l[2] : "";
+    const mins = hr*60 + d.getMinutes();
+    $("hunger").textContent = "Đồng hồ bụng đói (tính từ nửa đêm, nói đùa thôi): " + Math.floor(mins/60) + " giờ " + (mins%60) + " phút.";
+  }
+  tick(); setInterval(tick, 30000);
+  const scene = document.querySelector(".scene");
+  menu.addEventListener("click", () => {
+    scene.classList.add("boost");
+    setTimeout(() => scene.classList.remove("boost"), 2500);
+  });
+})();
+
+/* ====== MƯA TOÀN TRANG ====== */
+(function(){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = $("rain"), g = c.getContext("2d");
+  let w, h, drops = [], dpr = Math.min(devicePixelRatio || 1, 2);
+  function size(){
+    w = innerWidth; h = innerHeight;
+    c.width = w*dpr; c.height = h*dpr; g.setTransform(dpr,0,0,dpr,0,0);
+    const n = Math.round(Math.min(160, w/6));
+    drops = Array.from({length:n}, () => ({
+      x: Math.random()*w, y: Math.random()*h,
+      l: 10 + Math.random()*16, v: 9 + Math.random()*8, a: .1 + Math.random()*.2
+    }));
+  }
+  size(); addEventListener("resize", size);
+  let run = true;
+  document.addEventListener("visibilitychange", () => { run = !document.hidden; if(run) loop(); });
+  function loop(){
+    if(!run) return;
+    g.clearRect(0,0,w,h);
+    g.lineWidth = 1; g.lineCap = "round";
+    for(const d of drops){
+      g.strokeStyle = `rgba(150,168,194,${d.a})`;
+      g.beginPath(); g.moveTo(d.x, d.y); g.lineTo(d.x - d.l*.18, d.y + d.l); g.stroke();
+      d.y += d.v; d.x -= d.v*.18;
+      if(d.y > h){ d.y = -d.l; d.x = Math.random()*(w+80); }
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+</script>
+</body>
+</html>
